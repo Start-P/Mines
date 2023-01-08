@@ -69,7 +69,7 @@ class MinesTableManager:
 if __name__ == "__main__":
     mines = MinesTableManager()
     table = mines.create_mines_table(1)
-    print(table)
+
     while True:
         try:
             x = int(input("x >> ")) - 1

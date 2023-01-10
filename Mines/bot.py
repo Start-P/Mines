@@ -9,7 +9,6 @@ def make_button(position_list, _x = None, _y = None, emoji=None, color=None, dis
     view = disnake.ui.View()
     for x in range(0, 5):
         for y in range(0, 5):
-            print(x,y,_x,_y,type(x),type(y),type(_x),type(_y))
             if [x, y] in position_list:
                 view.add_item(
                     disnake.ui.Button(

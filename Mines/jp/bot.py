@@ -6,7 +6,7 @@ bot = commands.InteractionBot()
 user_game_list = {}
 
 with open("token.txt") as f:
-    token = f.read().splitline()[0]
+    token = f.read().splitlines()[0]
 
 def make_button(position_list, _x = None, _y = None, emoji=None, color=None, disabled=None):
     view = disnake.ui.View()

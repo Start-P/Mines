@@ -5,6 +5,9 @@ from mines_emu import MinesTableManager
 bot = commands.InteractionBot()
 user_game_list = {}
 
+with open("token.txt") as f:
+    token = f.read().splitline()[0]
+
 def make_button(position_list, _x = None, _y = None, emoji=None, color=None, disabled=None):
     view = disnake.ui.View()
     for x in range(0, 5):
@@ -57,11 +60,27 @@ def make_button(position_list, _x = None, _y = None, emoji=None, color=None, dis
     ]
 )
 async def slash_calc(inter, mines_amount: int):
+    if mines_amount < 0 or 25 <=  mines_amount:
+        await inter.response.send_message("爆弾の数が多すぎるか少なすぎるため、ゲームを開始することができません。", ephemeral=True)
     view = make_button([])
     raw_button = []
     mines = MinesTableManager()
     table = mines.create_mines_table(int(mines_amount))
-    await inter.response.send_message("クリックしてプレイ", view=view)
+    print(table)
+    embed = disnake.Embed(
+        title="Mines Emulator",
+    description="Minesを遊ぶことができます。",
+        color=disnake.Colour.blue(),
+        )
+
+    embed.set_author(
+        name=inter.user.name,
+        icon_url=inter.user.avatar.url
+            )
+    embed.add_field(name="Status", value="継続中")
+    embed.add_field(name="爆弾の数", value=str(int(mines_amount)))
+    embed.add_field(name="残りパネル数", value="25")
+    await inter.response.send_message(embed=embed, view=view)
     user_game_list[str(inter.user.id)] = [mines, []]
 
 @bot.event
@@ -73,14 +92,21 @@ async def on_button_click(inter):
         x, y = map(int, xy)
         mines, position_list = user_game_list[str(inter.user.id)]
         checked = mines.check_bomb(x, y)
+        already_checked, mines_amount = mines.return_infomation()
+        remain_panels = str(25 - already_checked + mines_amount)
         already_checked, mines_amount = map(str, mines.return_infomation())
-        remain_panels = str(25 - int(already_checked))
         if type(checked[0]) == list and checked[1] == "Safe":
             emoji = "💎"
             color = disnake.ButtonStyle.green
             embed_color = disnake.Colour.blue()
             disabled = False
             status = "継続中"
+        if remain_panels == mines_amount:
+            emoji = "💣"
+            color = disnake.ButtonStyle.red
+            embed_color = disnake.Colour.green()
+            disabled = True
+            status = "おめでとうございます🎉。\n爆弾を引くことなくゲームを終了できました。"
         if checked[1] == "Bombed":
             emoji = "💣"
             color = disnake.ButtonStyle.red
@@ -106,4 +132,4 @@ async def on_button_click(inter):
         user_game_list[str(inter.user.id)] = [mines, position_list]
 
 
-bot.run("")
+bot.run(token)

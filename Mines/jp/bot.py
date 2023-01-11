@@ -1,6 +1,10 @@
+import sys
+sys.path.append('../')
+
 import disnake
 from disnake.ext import commands
-from mines_emu import MinesTableManager
+
+from mines import MinesTableManager
 
 bot = commands.InteractionBot()
 user_game_list = {}

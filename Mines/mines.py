@@ -34,8 +34,11 @@ class MinesTableManager:
         return mines_table
     
     def return_infomation(self):
-      return self.already_checked, self.mines_amount 
+        return self.already_checked, self.mines_amount 
       
+    def return_table(self):
+        return self.mines_table
+
     def check_bomb(self, x: int, y: int):
         print(self.already_checked)
         if self.already_checked == 25:

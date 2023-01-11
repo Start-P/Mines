@@ -8,6 +8,28 @@ user_game_list = {}
 with open("token.txt") as f:
     token = f.read().splitlines()[0]
 
+def show_down(table):
+    view = disnake.ui.View()
+    for x in range(0, 5):
+        for y in range(0, 5):
+            if table[x][y] == '💣':
+                color = disnake.ButtonStyle.red
+                emoji = "💣"
+            else:
+                color = disnake.ButtonStyle.green
+                emoji = "💎"
+            view.add_item(
+                disnake.ui.Button(
+                    label="",
+                    emoji=emoji,
+                    style=color,
+                    custom_id=f"button.{str(x)},{str(y)}",
+                    row=x,
+                    disabled=True
+            )       
+        )
+    return view
+
 def make_button(position_list, _x = None, _y = None, emoji=None, color=None, disabled=None):
     view = disnake.ui.View()
     for x in range(0, 5):
@@ -101,18 +123,21 @@ async def on_button_click(inter):
             embed_color = disnake.Colour.blue()
             disabled = False
             status = "継続中"
+            view = make_button(position_list, x, y, emoji, color, disabled)
         if remain_panels == mines_amount:
             emoji = "💣"
             color = disnake.ButtonStyle.red
             embed_color = disnake.Colour.green()
             disabled = True
             status = "おめでとうございます🎉。\n爆弾を引くことなくゲームを終了できました。"
+            view = show_down(mines.return_table())
         if checked[1] == "Bombed":
             emoji = "💣"
             color = disnake.ButtonStyle.red
             embed_color = disnake.Colour.red()
             disabled = True
             status = "爆弾を引いたため、ゲームが終了しました。"
+            view = show_down(mines.return_table())
         embed = disnake.Embed(
             title="Mines Emulator",
         description="Minesを遊ぶことができます。",

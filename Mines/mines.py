@@ -52,9 +52,7 @@ class MinesTableManager:
             self.already_checked += 1
             self.mines_table[x][y] = "💎"
             return self.mines_table, "Safe"
-            
-               
-                  
+
     def mask_bomb(self):
         for x in range(0, 5):
             for y in range(0, 5):
